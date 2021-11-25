@@ -57,6 +57,29 @@ const actions = {
       commit('setLogged', false)
       return error.response.status
     }
+  },
+
+  async logout({commit, rootState}) {
+    const access_token = Vue.$cookies.get('jwt');
+    const config = {
+      url: `${rootState.api_url}/logout`,
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + access_token }
+    }
+    try {
+      const response = await axios(config)
+      commit('setCurrentUser', null)
+      commit('setLogged', false)
+      Vue.$cookies.remove('jwt')
+      return response.status
+    } catch(error) {
+      if (error.response.status == 401 ) {
+        commit('setCurrentUser', null)
+        commit('setLogged', false)
+        Vue.$cookies.remove('jwt')
+      }
+      return error.response.status;
+    }
   }
 }
 
