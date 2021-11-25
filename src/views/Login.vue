@@ -58,7 +58,7 @@ export default {
   },
 
   methods: {
-    ...mapActions('auth', ['login', 'test']),
+    ...mapActions('auth', ['login', 'getCurrentUser']),
     async sendForm() {
       if (!this.$refs.form.validate()) {
         return
@@ -71,15 +71,17 @@ export default {
 
       const status = await this.login(user);
       if (status == 200) {
-        console.log('Bien')
+        this.$router.push({name: 'Home'});
       } else {
         console.log('Mal')
       }
     }
   },
-  mounted() {
-    console.log(this.currentUser);
-    this.test();
+
+  async created() {
+    if (this.currentUser) {
+      this.$router.push({name: 'Home'})
+    }
   }
 }
 </script>

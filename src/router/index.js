@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
+import store from '../store/index';
 
 Vue.use(VueRouter)
 
@@ -30,6 +31,14 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach(async (to, from, next) => {
+  if (to.name != 'Login' && (await store.dispatch('auth/getCurrentUser') == 401)) {
+    Vue.$cookies.remove('jwt');
+    next({name: 'Login'})
+  }
+  next()
 })
 
 export default router

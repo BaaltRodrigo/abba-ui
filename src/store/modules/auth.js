@@ -1,4 +1,4 @@
-// import Vue from 'vue'
+import Vue from 'vue'
 import axios from 'axios'
 
 const state = {
@@ -25,6 +25,23 @@ const actions = {
     console.log(await axios(config));
   },
 
+  async getCurrentUser({commit, rootState}) {
+    const accessToken = Vue.$cookies.get('jwt');
+    const config = {
+      url: `${rootState.api_url}/me`,
+      method: 'GET',
+      headers: { Authorization: 'Bearer ' + accessToken}
+    };
+    try {
+      const response = await axios(config);
+      commit('setCurrentUser', response.data);
+      return response.status;
+    } catch (error) {
+      commit('setCurrentUser', null);
+      return error.response.status;
+    }
+  },
+
   async login({commit, rootState}, payload) {
     const config = {
       url: `${rootState.api_url}/login`,
@@ -32,11 +49,12 @@ const actions = {
       data: payload ,
     };
     try {
-      const response = await axios(config);
-      console.log(response);
-      commit('setLogged', true);
+      const response = await axios(config)
+      Vue.$cookies.set('jwt', response.data.access_token, -1)
+      commit('setLogged', true)
+      return response.status
     } catch(error) {
-      commit('setLogged', false);
+      commit('setLogged', false)
       return error.response.status
     }
   }
