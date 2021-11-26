@@ -1,7 +1,10 @@
 <template>
-  <v-app-bar app clipped-left flat dense color='accent'>
+  <v-app-bar app clipped-left flat dense :color="$vuetify.theme.dark ? 'indigo' : 'accent'">
     <v-toolbar-title>Abba</v-toolbar-title>
     <v-spacer></v-spacer>
+    <v-btn icon @click="$vuetify.theme.dark = !$vuetify.theme.dark">
+      <v-icon>{{ $vuetify.theme.dark ? 'mdi-weather-sunny' : 'mdi-weather-night' }}</v-icon>
+    </v-btn>
     <v-btn icon @click="exitApp">
       <v-icon>mdi-logout</v-icon>
     </v-btn>

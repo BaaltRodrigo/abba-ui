@@ -5,6 +5,9 @@
         <v-card>
           <v-card-title>Login de usuarios</v-card-title>
           <v-card-text>
+            <v-alert v-model="showAlert" dismissible outlined type="error">
+              Credenciales incorrectas
+            </v-alert>
             <v-form ref="form">
               <v-text-field
                 v-model="username"
@@ -45,6 +48,7 @@ export default {
 
   data() {
     return {
+      showAlert: false,
       username: null,
       password: null,
       rules: {
@@ -71,8 +75,10 @@ export default {
 
       const status = await this.login(user);
       if (status == 200) {
-        this.$router.push({name: 'Home'});
+        await this.getCurrentUser()
+        this.$router.push({name: 'Root'});
       } else {
+        this.showAlert = true;
         console.log('Mal')
       }
     }
@@ -80,7 +86,7 @@ export default {
 
   async created() {
     if (this.currentUser) {
-      this.$router.push({name: 'Home'})
+      this.$router.push({name: 'Root'})
     }
   }
 }
